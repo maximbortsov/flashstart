@@ -111,7 +111,7 @@ Spec, построенный на `[head]`-Job, получает предупр�
 3. Каждая история ссылается на `FR`, у каждой есть AC.
 4. Эпик Aha Moment существует и стоит первым в треках M и L.
 5. У каждого `A` со статусом `open` есть тест и kill-порог.
-6. Validation debt = число `A` со статусом `open`. Выводится в `fs`.
+6. Validation debt = открытые `A` + пропущенные гейты (`skipped_gates`) + 1, если spec опирается на `[head]`-Job. Выводится в `fs` с разбивкой. *Формула предварительная — пересматривается по итогам прогона `examples/h-001`.*
 7. Каждый `FR` покрыт хотя бы одной историей (трек L; в треке M — после spec).
 
 Детали формата (frontmatter, `items`, маркеры AC, коды правил) — `docs/contract.md`.
@@ -156,16 +156,19 @@ flashstart/
 ├─ README.md                 # 1 страница: зачем, треки, быстрый старт
 ├─ METHOD.md                 # принципы P1–P6 + глоссарий (Job, SC, RAT, Aha…)
 ├─ skills/
-│  ├─ fs/SKILL.md
+│  ├─ fs/{SKILL.md, state.template.yaml}
 │  ├─ fs-frame/{SKILL.md, template.md}
 │  ├─ fs-rat/{SKILL.md, template.md}
 │  ├─ fs-test/{SKILL.md, template.md, references/job-language.md}
 │  ├─ fs-spec/{SKILL.md, template.md, product-md.template.md}
-│  ├─ fs-plan/{SKILL.md, architecture.template.md, story.template.md}
+│  ├─ fs-plan/{SKILL.md, architecture.template.md, epic.template.md, story.template.md, project-context.template.md}
 │  ├─ fs-build/{SKILL.md, review-checklist.md}
 │  ├─ fs-design/{SKILL.md, references/antipatterns.md, references/states-and-copy.md, design-md.template.md}
+│  ├─ fs-ship/{SKILL.md, template.md, references/hosting.md}
 │  └─ fs-learn/{SKILL.md, template.md}
 ├─ scripts/trace-check.py    # проверка правил §5
+├─ tests/                    # тесты trace-check и шаблонов
+├─ docs/contract.md          # формат frontmatter и коды правил
 ├─ examples/h-001/           # один полный прогон эталонной гипотезы
 └─ CLAUDE.md                 # правила для Claude Code: пути, ID, гейты
 ```
@@ -205,6 +208,8 @@ flashstart/
 - [x] `PRODUCT.md` и `DESIGN.md` — в корне продукта.
 - [x] Фронтенды сразу Impeccable-fitted: совместимые `PRODUCT.md`/`DESIGN.md`, детектор в DoD.
 - [x] BMAD анализируем по стабильной v6.12.
+- [x] Контракт: свойства ID — в `items` frontmatter; эпики — файлы `stories/E*.md`; AC помечаются `AC1…`; истории ожидаются в M после spec, в L после architecture; в `DESIGN.md` только ключи спецификации.
+- [x] Validation debt — сумма трёх слагаемых (предварительно, до прогона h-001).
 
 **Открыто:**
 - [ ] Состав пресета «starter» — определяется на синтетическом примере `h-001`.
