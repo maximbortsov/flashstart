@@ -1,0 +1,7 @@
+# .fs/state.yaml — состояние текущей гипотезы в продуктовом репо
+hypothesis: h-NNN
+track: S                  # S | M | L
+stage: frame              # frame | rat | test | spec | plan | build | ship | learn
+validation_debt: 0        # пересчитывает trace-check
+skipped_gates: []         # [{gate: fs-rat, reason: "…", date: YYYY-MM-DD}]
+next: fs-rat

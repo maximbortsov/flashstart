@@ -110,9 +110,11 @@ Spec, построенный на `[head]`-Job, получает предупр�
 2. Каждый `SC`, на который ссылаются FR, имеет `EV` (иначе гипотезу нечем проверить после релиза).
 3. Каждая история ссылается на `FR`, у каждой есть AC.
 4. Эпик Aha Moment существует и стоит первым в треках M и L.
-7. Каждый `FR` покрыт хотя бы одной историей (трек L; в треке M — после spec).
 5. У каждого `A` со статусом `open` есть тест и kill-порог.
 6. Validation debt = число `A` со статусом `open`. Выводится в `fs`.
+7. Каждый `FR` покрыт хотя бы одной историей (трек L; в треке M — после spec).
+
+Детали формата (frontmatter, `items`, маркеры AC, коды правил) — `docs/contract.md`.
 
 ### Frontmatter артефакта
 ```yaml
@@ -161,7 +163,7 @@ flashstart/
 │  ├─ fs-spec/{SKILL.md, template.md, product-md.template.md}
 │  ├─ fs-plan/{SKILL.md, architecture.template.md, story.template.md}
 │  ├─ fs-build/{SKILL.md, review-checklist.md}
-│  ├─ fs-design/{SKILL.md, references/antipatterns.md, references/states-and-copy.md, product-md.template.md, design-md.template.md}
+│  ├─ fs-design/{SKILL.md, references/antipatterns.md, references/states-and-copy.md, design-md.template.md}
 │  └─ fs-learn/{SKILL.md, template.md}
 ├─ scripts/trace-check.py    # проверка правил §5
 ├─ examples/h-001/           # один полный прогон эталонной гипотезы
