@@ -2,6 +2,7 @@
 import importlib.util
 import io
 import json
+import re
 import sys
 import tempfile
 import textwrap
@@ -398,6 +399,21 @@ class Templates(unittest.TestCase):
     def test_state_template(self):
         data = tc.mini_yaml((ROOT / "skills/fs/state.template.yaml").read_text(encoding="utf-8"))
         self.assertEqual(set(data), {"hypothesis", "track", "stage", "validation_debt", "skipped_gates", "next"})
+
+
+class Skills(unittest.TestCase):
+    def test_skill_files_valid(self):
+        for p in sorted((ROOT / "skills").glob("*/SKILL.md")):
+            with self.subTest(skill=p.parent.name):
+                text = p.read_text(encoding="utf-8")
+                self.assertLessEqual(len(text.splitlines()), 300)
+                m = tc.FRONTMATTER_RE.match(text)
+                self.assertIsNotNone(m)
+                data = tc.mini_yaml(m.group(1))
+                self.assertEqual(data["name"], p.parent.name)
+                self.assertTrue(data.get("description"))
+                for ref in re.findall(r"`(references/[\w.-]+|[\w.-]*template[\w.-]*)`", text):
+                    self.assertTrue((p.parent / ref).exists() or (ROOT / "skills/fs" / ref).exists(), ref)
 
 
 class Cli(Base):
