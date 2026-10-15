@@ -15,18 +15,18 @@ typography:
     fontSize: "1rem"
     lineHeight: 1.5
 rounded:
-  sm: "4px"
-  md: "8px"
+  control: "6px"
+  surface: "12px"
 spacing:
-  sm: "8px"
-  md: "16px"
-  lg: "32px"
+  tight: "6px"
+  base: "12px"
+  section: "48px"
 components:
-  button-primary:
-    backgroundColor: "{colors.primary}"
+  action-main:
     textColor: "{colors.neutral-bg}"
-    rounded: "{rounded.md}"
-    padding: "12px 24px"
+    backgroundColor: "{colors.primary}"
+    padding: "10px 20px"
+    rounded: "{rounded.control}"
 ---
 
 # Design System: <Название продукта>
