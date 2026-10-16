@@ -21,7 +21,7 @@ user-invocable: true
 
 1. Найди `.fs/state.yaml` в корне продуктового репо.
    - **Нет** → гипотез ещё нет. Коротко объясни, что такое FlashStart (см. «Как устроено»), и предложи `fs-frame`.
-2. Запусти `python3 scripts/trace-check.py docs/fs/<hypothesis> --json` (скрипт — из репо FlashStart или скопированный в продукт). Нет Python или скрипта — посчитай вручную по артефактам: открытые допущения в `02-rat.md` и `skipped_gates`.
+2. Запусти `python3 scripts/trace-check.py docs/fs/<hypothesis> --json`. Если в проекте нет `scripts/trace-check.py` (FlashStart поставлен глобально) — возьми `~/.claude/skills/fs/trace-check.py`; во всех остальных скиллах FlashStart путь к скрипту тот же. Нет Python или скрипта — посчитай вручную по артефактам: открытые допущения в `02-rat.md` и `skipped_gates`.
 3. Выведи блок:
 
 ```

@@ -31,11 +31,37 @@
 | `fs-ship` | выкладка, домен, секреты, проверка событий, чек-лист релиза |
 | `fs-learn` | факт против порога → continue / pivot / kill |
 
+## Установка
+
+Нужны git и Python 3.10+; для стека starter и детектора интерфейса — Node.js 22.6+.
+
+Из папки своего продуктового репозитория — одна команда:
+
+```bash
+git clone https://github.com/maximbortsov/flashstart.git ~/.flashstart && python3 ~/.flashstart/install.py
+```
+
+Windows (PowerShell):
+
+```powershell
+git clone https://github.com/maximbortsov/flashstart.git $HOME\.flashstart; py $HOME\.flashstart\install.py
+```
+
+Установщик кладёт скиллы в `.claude/skills/` проекта, а `trace-check.py` — в `scripts/`. Другие скиллы и файлы не трогает.
+
+| Задача | Команда |
+|---|---|
+| Поставить в другой проект | `python3 ~/.flashstart/install.py путь/к/проекту` |
+| Для всех проектов сразу | `python3 ~/.flashstart/install.py --global` |
+| Обновить | `python3 ~/.flashstart/install.py --update` |
+| Удалить из проекта | `python3 ~/.flashstart/install.py --uninstall` |
+| Посмотреть, что будет сделано | добавить `--dry-run` |
+
+Репозиторий пока приватный: клонирование сработает, если у вас есть доступ к нему на GitHub.
+
 ## Быстрый старт
 
-1. Скопируйте папки из `skills/` в `.claude/skills/` своего продуктового репо (или в `~/.claude/skills/` — для всех проектов).
-2. Скопируйте `scripts/trace-check.py` в `scripts/` продуктового репо (нужен Python 3.10+).
-3. В Claude Code: `/fs-frame` и опишите идею своими словами. Дальше подскажет `/fs`.
+В Claude Code в папке проекта: `/fs-frame` и опишите идею своими словами. Дальше подскажет `/fs`.
 
 ## Вдохновение
 
