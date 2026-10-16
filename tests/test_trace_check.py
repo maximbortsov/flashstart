@@ -320,6 +320,20 @@ class Debt(Base):
         self.assertEqual(rep.debt, {"open_assumptions": 1, "skipped_gates": 2, "head_spec": 1, "total": 4})
         self.assertIn("W1", self.rules(rep, "warning"))
 
+    def test_head_sc_used_by_fr_adds_debt(self):
+        files = green_files()
+        files["01-frame.md"] = FRAME.replace('SC1.1: {measure:', 'SC1.1: {confidence: head, measure:')
+        rep = self.check(files)
+        self.assertEqual(rep.debt["head_spec"], 1)
+        self.assertTrue(any("SC1.1" in f.message for f in rep.findings if f.rule == "W1"))
+
+    def test_head_sc_not_used_by_fr_no_debt(self):
+        files = green_files()
+        files["01-frame.md"] = FRAME.replace("ids: [J1, J2, SC1.1, SC1.2]", "ids: [J1, J2, SC1.1, SC1.2, SC1.3]").replace(
+            "      SC1.1: {", '      SC1.3: {confidence: head, measure: "x"}\n      SC1.1: {')
+        rep = self.check(files)
+        self.assertEqual(rep.debt["head_spec"], 0)
+
     def test_state_of_other_hypothesis_ignored(self):
         rep = self.check(state="hypothesis: h-002\nskipped_gates: [x, y]\n")
         self.assertEqual(rep.debt["skipped_gates"], 0)
@@ -534,7 +548,7 @@ class ExampleH001(unittest.TestCase):
                 rep = tc.check_hypothesis(hdir, force_builtin=builtin)
                 self.assertEqual(rep.errors, [], [f.message for f in rep.errors])
                 self.assertEqual(rep.track, "M")
-                self.assertEqual(rep.debt["total"], 2)
+                self.assertEqual(rep.debt["total"], 3)
 
 
 if __name__ == "__main__":

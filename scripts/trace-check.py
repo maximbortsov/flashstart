@@ -494,14 +494,15 @@ def check_hypothesis(hdir: Path, state_path: Path | None = None, force_builtin=F
             if fr not in covered:
                 rep.add("error", "R7", f"{fr} не покрыт ни одной историей", defs[fr].path.name)
 
-    # Spec на [head]-Job
+    # Spec на [head]: Job или критерий успеха, на которые опираются FR, не подтверждены клиентами
     head_spec = 0
     if "spec" in kinds:
         jobs_used = {f"J{id_num(sc)[0]}" for sc in sc_from_fr}
-        head_jobs = sorted((j for j in jobs_used if str(meta_of.get(j, {}).get("confidence", "")).lower() == "head"), key=id_num)
-        if head_jobs:
+        is_head = lambda i: str(meta_of.get(i, {}).get("confidence", "")).lower() == "head"
+        head_ids = sorted((i for i in jobs_used | sc_from_fr if is_head(i)), key=lambda i: (id_type(i) != "J", id_num(i)))
+        if head_ids:
             head_spec = 1
-            rep.add("warning", "W1", f"spec опирается на Job из головы фаундера: {', '.join(head_jobs)} (+1 к validation debt)", kinds["spec"].path.name)
+            rep.add("warning", "W1", f"spec опирается на непроверенное (из головы фаундера): {', '.join(head_ids)} (+1 к validation debt)", kinds["spec"].path.name)
 
     # Гейт fs-test: у теста есть дата решения и проверяемое допущение с порогом
     if "test" in kinds:

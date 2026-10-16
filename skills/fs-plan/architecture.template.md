@@ -6,7 +6,7 @@ ids: []
 refs: {}
 user_level: beginner                         # beginner | intermediate | advanced
 stack_preset: starter                        # starter | custom
-stack_provisional: true                      # true, пока пресет starter не утверждён на h-001
+stack_provisional: false                     # true — для трека L, пока пресет L не утверждён
 status: draft
 ---
 
