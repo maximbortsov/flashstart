@@ -33,7 +33,7 @@
 | `items` | нет | `{ID: {свойство: значение}}` — свойства ID этого файла |
 | `status` | нет | статус документа: `draft`, `approved`, `superseded` |
 
-Специфичные ключи: `track` (в `02-rat.md`), `market`, `audience_language` (в `01-frame.md`), `tests`, `decision_date` (в `03-test.md`), `decision` (в `06-learn.md`), `user_level`, `stack_preset` (в `05-architecture.md`).
+Специфичные ключи: `tests` — какие допущения проверяет артефакт (в `03-test.md` и `04-spec.md`; ссылка на несуществующий A — ошибка I2), `track` (в `02-rat.md`), `market`, `audience_language` (в `01-frame.md`), `decision_date` (в `03-test.md`), `decision` (в `06-learn.md`), `user_level`, `stack_preset` (в `05-architecture.md`).
 
 ## 3. Свойства в `items`
 

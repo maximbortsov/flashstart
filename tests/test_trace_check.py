@@ -52,6 +52,7 @@ RAT = fm("""
 SPEC = fm("""
     fs: spec
     hypothesis: h-001
+    tests: [A1]
     ids: [FR1, FR2, EV1, EV2]
     refs: {FR1: [SC1.1], FR2: [SC1.2], EV1: [SC1.1], EV2: [SC1.2]}
     """)
@@ -330,6 +331,12 @@ class Integrity(Base):
         files["01-frame.md"] = FRAME.replace("ids: [J1, J2, SC1.1, SC1.2]", "ids: [J1, J2, SC1.1, SC1.2, SC3.1]")
         rep = self.check(files)
         self.assertIn("I4", self.rules(rep))
+
+    def test_spec_tests_unknown_assumption(self):
+        files = green_files()
+        files["04-spec.md"] = SPEC.replace("tests: [A1]", "tests: [A7]")
+        rep = self.check(files)
+        self.assertIn("I2", self.rules(rep))
 
     def test_wrong_ref_type(self):
         files = green_files()

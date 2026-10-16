@@ -513,10 +513,14 @@ def check_hypothesis(hdir: Path, state_path: Path | None = None, force_builtin=F
         if not tested:
             rep.add("warning", "G3", "в 03-test.md не указано, какое допущение проверяем (tests: [A?])", tart.path.name)
         for a_id in tested:
-            if a_id not in defs:
-                rep.add("error", "I2", f"03-test.md проверяет несуществующее {a_id}", tart.path.name)
-            elif not meta_of.get(a_id, {}).get("kill"):
+            if a_id in defs and not meta_of.get(a_id, {}).get("kill"):
                 rep.add("warning", "G3", f"у проверяемого {a_id} нет kill-порога в 02-rat.md", tart.path.name)
+
+    # Ключ tests в любом артефакте ссылается только на существующие допущения
+    for a in arts:
+        for a_id in _as_list(a.meta.get("tests")):
+            if id_type(a_id) != "A" or a_id not in defs:
+                rep.add("error", "I2", f"{a.path.name} проверяет несуществующее допущение {a_id}", a.path.name)
 
     # 6. Validation debt
     skipped = state.get("skipped_gates") or []
