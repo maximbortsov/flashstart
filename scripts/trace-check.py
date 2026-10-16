@@ -503,6 +503,21 @@ def check_hypothesis(hdir: Path, state_path: Path | None = None, force_builtin=F
             head_spec = 1
             rep.add("warning", "W1", f"spec опирается на Job из головы фаундера: {', '.join(head_jobs)} (+1 к validation debt)", kinds["spec"].path.name)
 
+    # Гейт fs-test: у теста есть дата решения и проверяемое допущение с порогом
+    if "test" in kinds:
+        tart = kinds["test"]
+        date = str(tart.meta.get("decision_date") or "")
+        if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", date):
+            rep.add("warning", "G3", "в 03-test.md нет даты решения (decision_date: ГГГГ-ММ-ДД)", tart.path.name)
+        tested = _as_list(tart.meta.get("tests"))
+        if not tested:
+            rep.add("warning", "G3", "в 03-test.md не указано, какое допущение проверяем (tests: [A?])", tart.path.name)
+        for a_id in tested:
+            if a_id not in defs:
+                rep.add("error", "I2", f"03-test.md проверяет несуществующее {a_id}", tart.path.name)
+            elif not meta_of.get(a_id, {}).get("kill"):
+                rep.add("warning", "G3", f"у проверяемого {a_id} нет kill-порога в 02-rat.md", tart.path.name)
+
     # 6. Validation debt
     skipped = state.get("skipped_gates") or []
     skipped_n = len(skipped) if isinstance(skipped, list) else 0

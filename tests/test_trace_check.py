@@ -255,6 +255,37 @@ class TraceRules(Base):
         self.assertEqual(rep.track, "L")
 
 
+class TestArtifact(Base):
+    TEST = fm("""
+        fs: test
+        hypothesis: h-001
+        ids: []
+        tests: [A1]
+        decision_date: 2026-11-01
+        """)
+
+    def files(self, test_text):
+        return {"01-frame.md": FRAME, "02-rat.md": RAT.replace("track: M", "track: S"), "03-test.md": test_text}
+
+    def test_green(self):
+        rep = self.check(self.files(self.TEST))
+        self.assertEqual(rep.findings, [])
+
+    def test_placeholder_date_warns(self):
+        rep = self.check(self.files(self.TEST.replace("2026-11-01", "YYYY-MM-DD")))
+        self.assertIn("G3", self.rules(rep, "warning"))
+        self.assertEqual(rep.errors, [])
+
+    def test_unknown_assumption_is_error(self):
+        rep = self.check(self.files(self.TEST.replace("tests: [A1]", "tests: [A9]")))
+        self.assertIn("I2", self.rules(rep))
+
+    def test_tested_assumption_without_kill_warns(self):
+        files = self.files(self.TEST.replace("tests: [A1]", "tests: [A2]"))
+        rep = self.check(files)
+        self.assertIn("G3", self.rules(rep, "warning"))
+
+
 class Debt(Base):
     def test_debt_counts_skipped_gates_and_head_spec(self):
         files = green_files()
@@ -320,7 +351,7 @@ class Integrity(Base):
         self.assertEqual(rep.errors, [])
 
 
-class BuiltinYamlVariants(GreenPath, TraceRules, Debt, Integrity):
+class BuiltinYamlVariants(GreenPath, TraceRules, TestArtifact, Debt, Integrity):
     """Те же сценарии без PyYAML."""
 
     builtin = True
