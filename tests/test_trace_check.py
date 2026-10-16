@@ -265,26 +265,44 @@ class TestArtifact(Base):
         decision_date: 2026-11-01
         """)
 
-    def files(self, test_text):
+    def build_test_files(self, test_text):
         return {"01-frame.md": FRAME, "02-rat.md": RAT.replace("track: M", "track: S"), "03-test.md": test_text}
 
     def test_green(self):
-        rep = self.check(self.files(self.TEST))
+        rep = self.check(self.build_test_files(self.TEST))
         self.assertEqual(rep.findings, [])
 
     def test_placeholder_date_warns(self):
-        rep = self.check(self.files(self.TEST.replace("2026-11-01", "YYYY-MM-DD")))
+        rep = self.check(self.build_test_files(self.TEST.replace("2026-11-01", "YYYY-MM-DD")))
         self.assertIn("G3", self.rules(rep, "warning"))
         self.assertEqual(rep.errors, [])
 
     def test_unknown_assumption_is_error(self):
-        rep = self.check(self.files(self.TEST.replace("tests: [A1]", "tests: [A9]")))
+        rep = self.check(self.build_test_files(self.TEST.replace("tests: [A1]", "tests: [A9]")))
         self.assertIn("I2", self.rules(rep))
 
     def test_tested_assumption_without_kill_warns(self):
-        files = self.files(self.TEST.replace("tests: [A1]", "tests: [A2]"))
+        files = self.build_test_files(self.TEST.replace("tests: [A1]", "tests: [A2]"))
         rep = self.check(files)
         self.assertIn("G3", self.rules(rep, "warning"))
+
+
+class LearnArtifact(Base):
+    def learn_files(self, decision):
+        return {
+            "01-frame.md": FRAME,
+            "02-rat.md": RAT.replace("track: M", "track: S"),
+            "06-learn.md": fm(f"fs: learn\nhypothesis: h-001\nids: []\ntests: [A1]\ndecision: {decision}"),
+        }
+
+    def test_valid_decision(self):
+        rep = self.check(self.learn_files("pivot"))
+        self.assertEqual(rep.findings, [])
+
+    def test_missing_decision_warns(self):
+        rep = self.check(self.learn_files("maybe"))
+        self.assertIn("G4", self.rules(rep, "warning"))
+        self.assertEqual(rep.errors, [])
 
 
 class Debt(Base):
@@ -358,7 +376,7 @@ class Integrity(Base):
         self.assertEqual(rep.errors, [])
 
 
-class BuiltinYamlVariants(GreenPath, TraceRules, TestArtifact, Debt, Integrity):
+class BuiltinYamlVariants(GreenPath, TraceRules, TestArtifact, LearnArtifact, Debt, Integrity):
     """Те же сценарии без PyYAML."""
 
     builtin = True

@@ -34,7 +34,7 @@
 | `items` | нет | `{ID: {свойство: значение}}` — свойства ID этого файла |
 | `status` | нет | статус документа: `draft`, `approved`, `superseded` |
 
-Специфичные ключи: `tests` — какие допущения проверяет артефакт (в `03-test.md` и `04-spec.md`; ссылка на несуществующий A — ошибка I2), `track` (в `02-rat.md`), `market`, `audience_language` (в `01-frame.md`), `decision_date` (в `03-test.md`), `decision` (в `06-learn.md`), `user_level`, `stack_preset` (в `05-architecture.md`).
+Специфичные ключи: `tests` — какие допущения проверяет артефакт (в `03-test.md`, `04-spec.md`, `06-learn.md`; ссылка на несуществующий A — ошибка I2), `track` (в `02-rat.md`), `market`, `audience_language` (в `01-frame.md`), `decision_date` (в `03-test.md`), `decision` (в `06-learn.md`), `user_level`, `stack_preset` (в `05-architecture.md`).
 
 ## 3. Свойства в `items`
 
@@ -81,6 +81,7 @@
 | G1 | предупр. | у SC нет `measure` |
 | G2 | предупр. | не у всех открытых A есть `p`, `impact`, `cost` — главное определено неточно |
 | G3 | предупр. | в `03-test.md` нет `decision_date`, не указано `tests` или у проверяемого A нет `kill` (ссылка на несуществующий A — ошибка I2) |
+| G4 | предупр. | в `06-learn.md` нет `decision` из `continue`, `pivot`, `kill` |
 | W1 | предупр. | spec опирается на Job с `confidence: head` |
 | I6, I7 | предупр. | `hypothesis` не совпадает с папкой; ссылка на выведенный из работы ID |
 

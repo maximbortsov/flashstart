@@ -516,6 +516,12 @@ def check_hypothesis(hdir: Path, state_path: Path | None = None, force_builtin=F
             if a_id in defs and not meta_of.get(a_id, {}).get("kill"):
                 rep.add("warning", "G3", f"у проверяемого {a_id} нет kill-порога в 02-rat.md", tart.path.name)
 
+    # Гейт fs-learn: решение записано
+    if "learn" in kinds:
+        decision = str(kinds["learn"].meta.get("decision") or "").lower()
+        if decision not in ("continue", "pivot", "kill"):
+            rep.add("warning", "G4", "в 06-learn.md нет решения (decision: continue | pivot | kill)", kinds["learn"].path.name)
+
     # Ключ tests в любом артефакте ссылается только на существующие допущения
     for a in arts:
         for a_id in _as_list(a.meta.get("tests")):
