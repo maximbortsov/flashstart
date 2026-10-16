@@ -13,7 +13,8 @@
    ├─ 01-frame.md   02-rat.md   03-test.md   04-spec.md
    ├─ 05-architecture.md   06-learn.md   07-ship.md
    ├─ project-context.md
-   ├─ review.md
+   ├─ review.md                 # ревью историй, секция на историю
+   ├─ deferred.md               # найденные старые проблемы вне историй
    └─ stories/
       ├─ E1.md                   # эпик
       └─ S1.1.md                 # история
