@@ -477,16 +477,15 @@ def check_hypothesis(hdir: Path, state_path: Path | None = None, force_builtin=F
             elif epics[0] not in ahas:
                 rep.add("error", "R4", f"эпик Aha ({ahas[0]}) должен стоять первым, первым стоит {epics[0]}", defs[ahas[0]].path.name)
 
-    # 5. У каждого открытого A есть тест и kill-порог
-    open_a = []
-    for a_id in of_kind("A"):
-        props = meta_of.get(a_id, {})
-        status = str(props.get("status", "open")).lower()
-        if status == "open":
-            open_a.append(a_id)
-            missing = [k for k in ("test", "kill") if not props.get(k)]
-            if missing:
-                rep.add("error", "R5", f"у открытого {a_id} нет: {', '.join(missing)}", defs[a_id].path.name)
+    # 5. У главного открытого A (максимальный приоритет) есть тест и kill-порог
+    open_a = [a for a in of_kind("A") if str(meta_of.get(a, {}).get("status", "open")).lower() == "open"]
+    top = top_assumption(open_a, meta_of)
+    if top:
+        if not all(_score(meta_of.get(a, {})) for a in open_a):
+            rep.add("warning", "G2", "не у всех открытых A есть оценки p, impact, cost — главное определено неточно", defs[top].path.name)
+        missing = [k for k in ("test", "kill") if not meta_of.get(top, {}).get(k)]
+        if missing:
+            rep.add("error", "R5", f"у главного допущения {top} нет: {', '.join(missing)}", defs[top].path.name)
 
     # 7. Каждый FR покрыт историей
     if stories_expected:
@@ -515,6 +514,22 @@ def check_hypothesis(hdir: Path, state_path: Path | None = None, force_builtin=F
     }
     rep.counts = {k: len(of_kind(k)) for k in ID_PATTERNS}
     return rep
+
+
+def _score(props: dict) -> float | None:
+    try:
+        p, impact, cost = (float(props[k]) for k in ("p", "impact", "cost"))
+    except (KeyError, TypeError, ValueError):
+        return None
+    return p * impact / cost if cost else None
+
+
+def top_assumption(open_ids: list[str], meta_of: dict) -> str | None:
+    """Главное допущение: максимальный приоритет p × impact / cost; при равенстве — меньший номер.
+    Допущения без оценок идут после оценённых."""
+    if not open_ids:
+        return None
+    return min(open_ids, key=lambda a: (-(_score(meta_of.get(a, {})) or -1), id_num(a)))
 
 
 def discover(paths: list[Path]) -> list[Path]:

@@ -193,8 +193,31 @@ class TraceRules(Base):
         files = green_files()
         files["02-rat.md"] = RAT.replace("A2: {status: confirmed}", "A2: {p: 2}")
         rep = self.check(files)
-        self.assertIn("R5", self.rules(rep))
         self.assertEqual(rep.debt["open_assumptions"], 2)
+        self.assertNotIn("R5", self.rules(rep))
+        self.assertIn("G2", self.rules(rep, "warning"))
+
+    def test_r5_only_top_assumption_checked(self):
+        files = green_files()
+        files["02-rat.md"] = RAT.replace("A2: {status: confirmed}", "A2: {status: open, p: 2, impact: 2, cost: 4}")
+        rep = self.check(files)
+        self.assertNotIn("R5", self.rules(rep))
+        self.assertNotIn("G2", self.rules(rep, "warning"))
+
+    def test_r5_top_is_highest_priority_not_lowest_number(self):
+        files = green_files()
+        files["02-rat.md"] = RAT.replace(
+            "A2: {status: confirmed}", "A2: {status: open, p: 5, impact: 5, cost: 1}"
+        )
+        rep = self.check(files)
+        self.assertIn("R5", self.rules(rep))
+        self.assertTrue(any("A2" in f.message for f in rep.errors))
+
+    def test_top_assumption_tie_breaks_by_number(self):
+        meta = {"A3": {"p": 2, "impact": 2, "cost": 1}, "A1": {"p": 4, "impact": 1, "cost": 1}, "A2": {}}
+        self.assertEqual(tc.top_assumption(["A3", "A1", "A2"], meta), "A1")
+        self.assertEqual(tc.top_assumption(["A2"], meta), "A2")
+        self.assertIsNone(tc.top_assumption([], meta))
 
     def test_r7_fr_not_covered(self):
         files = green_files()
