@@ -1,0 +1,5 @@
+app/data/
+node_modules/
+.impeccable/questions/
+.impeccable/mocks/
+.impeccable/build/

@@ -523,5 +523,19 @@ class Cli(Base):
         self.assertEqual(code, 2)
 
 
+
+class ExampleH001(unittest.TestCase):
+    """Эталонный прогон examples/h-001 должен оставаться зелёным."""
+
+    def test_example_is_green(self):
+        hdir = ROOT / "examples" / "h-001" / "docs" / "fs" / "h-001"
+        for builtin in (False, True):
+            with self.subTest(builtin=builtin):
+                rep = tc.check_hypothesis(hdir, force_builtin=builtin)
+                self.assertEqual(rep.errors, [], [f.message for f in rep.errors])
+                self.assertEqual(rep.track, "M")
+                self.assertEqual(rep.debt["total"], 2)
+
+
 if __name__ == "__main__":
     unittest.main()

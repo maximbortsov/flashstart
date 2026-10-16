@@ -1,0 +1,8 @@
+# .fs/state.yaml — состояние текущей гипотезы
+hypothesis: h-001
+track: M
+stage: ship
+validation_debt: 2        # пересчитывает trace-check
+skipped_gates:
+  - {gate: fs-ship, reason: "синтетический пример: публичный деплой не выполнялся", date: 2026-10-16}
+next: fs-build S2.1
